@@ -1,1 +1,5 @@
 .clinic
+node_modules
+.vscode
+.env
+coverage

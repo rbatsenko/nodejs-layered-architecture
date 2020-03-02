@@ -1,19 +1,31 @@
 {
   "scripts": {
     "start": "node src/server.js",
+    "start:prod": "node -r dotenv/config src/server.js",
     "watch": "nodemon src/server.js",
+    "watch:prod": "nodemon -r dotenv/config src/server.js",
     "test:unit": "mocha test/unit",
     "test:component": "mocha --exit test/component",
     "test": "npm-run-all --parallel test:*"
   },
   "dependencies": {
+    "@hapi/joi": "17.1.0",
+    "crossenv": "0.0.2-security",
+    "dotenv": "8.2.0",
     "express": "4.17.1",
-    "mongodb": "3.3.4"
+    "mongodb": "3.3.4",
+    "why-is-node-running": "^2.1.0"
   },
   "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-config-prettier": "6.10.0",
+    "eslint-plugin-import": "2.20.1",
+    "eslint-plugin-prettier": "3.1.2",
     "mocha": "6.2.2",
     "nodemon": "1.19.4",
     "npm-run-all": "4.1.5",
+    "prettier": "1.19.1",
     "supertest": "4.0.2"
   }
 }

@@ -1,10 +1,10 @@
-const assert = require("assert");
+const assert = require('assert');
 
-describe("Math in JS", function() {
-    it("should support +", function(done) {
-        setTimeout(function() {
-            assert.equal(1 + 1, 2);
-            done();
-        }, 100);
-    });
+describe('Math in JS', () => {
+  it('should support +', (done) => {
+    setTimeout(() => {
+      assert.equal(1 + 1, 2);
+      done();
+    }, 100);
+  });
 });
