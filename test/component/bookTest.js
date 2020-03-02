@@ -16,12 +16,14 @@ describe('Book catalog', () => {
       .set('Content-Type', 'application/json')
       .expect(302);
 
-    await request.get(createResult.header.location).expect(200, {
-      title: 'JavaScript in Action',
-      slug: 'javascript-in-action',
-      authors: ['James Smith', 'Kate Donovan'],
-      isbn: '0123456789',
-      description: 'The ultimate JS book!',
-    });
+    await request
+      .get(createResult.header.location)
+      .expect(200, {
+        title: 'JavaScript in Action',
+        slug: 'javascript-in-action',
+        authors: ['James Smith', 'Kate Donovan'],
+        isbn: '0123456789',
+        description: 'The ultimate JS book!',
+      });
   });
 });
