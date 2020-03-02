@@ -17,7 +17,6 @@ module.exports = ({ bookService, bookRepository }) => ({
       // HTTP
       res.redirect(`/book/${isbn}`);
     } catch (e) {
-      console.log(e);
       next(e);
     }
   },
