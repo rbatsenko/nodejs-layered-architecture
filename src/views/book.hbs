@@ -1,0 +1,16 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">{{book.title}}</h4>
+    <h6 class="card-subtitle mb-2 text-muted">
+      {{#book.authors}}
+      <span>{{.}}</span>
+      {{/book.authors}}
+    </h6>
+    <div class="card-text">
+      <pre>{{book.description}}</pre>
+    </div>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">ISBN <span>{{book.isbn}}</span></li>
+  </ul>
+</div>

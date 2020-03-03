@@ -27,15 +27,21 @@ module.exports = ({ bookService, bookRepository }) => withErrorHandling(wrapWith
     // HTTP
     res.redirect(`/book/${isbn}`);
   },
-  async details(req, res) {
+  async details(req, res, next) {
     const { isbn } = req.params;
+    const { nolayout } = req.query;
+    const layout = nolayout == null;
 
     const book = await bookRepository.findOne(isbn);
+
+    if (!book) {
+      next();
+    }
 
     res.format({
       'text/html': () => {
         // reprezentacja HTML
-        res.send('HTML');
+        res.render('book', { book, layout: layout ? 'layout' : '' });
       },
       'application/json': () => {
         res.json(book);
