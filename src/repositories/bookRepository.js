@@ -1,20 +1,16 @@
-const { MongoClient } = require('mongodb');
+module.exports = db => {
+  const books = db.collection('books');
 
-const url = process.env.MONGO_URI || 'mongodb://localhost:27017/booksapi';
+  return {
+    getList: async () => books.find({}).toArray(),
 
-const booksPromise = MongoClient
-  .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((client) => client.db().collection('books'));
+    createOrUpdate: async book => {
+      await books.updateOne({ isbn: book.isbn }, { $set: book }, { upsert: true });
+    },
 
-module.exports = {
-  async createOrUpdate(book) {
-    const books = await booksPromise;
-
-    await books.updateOne({ isbn: book.isbn }, { $set: book }, { upsert: true });
-  },
-  async findOne(isbn) {
-    const books = await booksPromise;
-    const book = await books.findOne({ isbn }, { projection: { _id: false } });
-    return book;
-  },
+    findOne: async isbn => {
+      const book = await books.findOne({ isbn }, { projection: { _id: false } });
+      return book;
+    },
+  };
 };

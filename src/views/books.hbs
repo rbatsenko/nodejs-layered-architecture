@@ -1,0 +1,20 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Title</th>
+      <th>Authors</th>
+      <th>ISBN</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#books}}
+    <tr>
+      <th></th>
+      <td><a href="{{url}}">{{title}}</td>
+      <td>{{authors}}</td>
+      <td>{{isbn}}</td>
+    </tr>
+    {{/books}}
+  </tbody>
+</table>

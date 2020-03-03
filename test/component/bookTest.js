@@ -3,7 +3,8 @@ const app = require('../../src/app');
 
 describe('Book catalog', () => {
   it('should support CRUD lifecycle', async () => {
-    const request = httpClient(app);
+    const db = await require('../../src/connection');
+    const request = httpClient(app(db));
 
     const createResult = await request
       .post('/book')

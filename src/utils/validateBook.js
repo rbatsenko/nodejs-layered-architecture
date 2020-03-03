@@ -27,7 +27,7 @@ const schema = Joi.object({
     .length(10),
 });
 
-const validateBook = (book) => {
+const validateBook = book => {
   const result = schema.validate(book, { allowUnknown: true, convert: true });
 
   return result.error ? result.error.details : null;

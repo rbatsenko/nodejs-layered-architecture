@@ -1,4 +1,6 @@
-const wrapWithTryCatch = (fn) => async (req, res, next) => {
+const { bookLink } = require('../links/links');
+
+const wrapWithTryCatch = fn => async (req, res, next) => {
   try {
     await fn(req, res, next);
   } catch (error) {
@@ -6,49 +8,66 @@ const wrapWithTryCatch = (fn) => async (req, res, next) => {
   }
 };
 
-const withErrorHandling = (wrapper, controllerObj) => Object.entries(controllerObj)
-  .reduce((accCur, [key, fn]) => ({ ...accCur, [key]: wrapper(fn) }), {});
+const withErrorHandling = (wrapper, controllerObj) =>
+  Object.entries(controllerObj).reduce((accCur, [key, fn]) => ({ ...accCur, [key]: wrapper(fn) }), {});
 
-module.exports = ({ bookService, bookRepository }) => withErrorHandling(wrapWithTryCatch, {
-  async createOrUpdate(req, res) {
-    // HTTP
-    const {
-      title, authors, isbn, description,
-    } = req.body;
+module.exports = ({ bookService, bookRepository }) =>
+  withErrorHandling(wrapWithTryCatch, {
+    async getList(req, res) {
+      const books = await bookRepository.getList();
 
-    // JS
-    await bookService.createOrUpdate({
-      title,
-      authors,
-      isbn,
-      description,
-    });
+      res.format({
+        'text/html': () => {
+          res.render('books', {
+            books: books.map(book => ({ ...book, url: bookLink(book.isbn) })),
+            layout: res.locals.layout,
+          });
+        },
+        'application/json': () => {
+          res.json(books);
+        },
+        default: () => {
+          res.json(books);
+        },
+      });
+    },
+    async createOrUpdate(req, res) {
+      // HTTP
+      const { title, authors, isbn, description } = req.body;
 
-    // HTTP
-    res.redirect(`/book/${isbn}`);
-  },
-  async details(req, res, next) {
-    const { isbn } = req.params;
-    const { nolayout } = req.query;
-    const layout = nolayout == null;
+      // JS
+      await bookService.createOrUpdate({
+        title,
+        authors,
+        isbn,
+        description,
+      });
 
-    const book = await bookRepository.findOne(isbn);
+      // HTTP
+      res.redirect(`/book/${isbn}`);
+    },
+    async details(req, res, next) {
+      const { isbn } = req.params;
 
-    if (!book) {
-      next();
-    }
+      const book = await bookRepository.findOne(isbn);
 
-    res.format({
-      'text/html': () => {
-        // reprezentacja HTML
-        res.render('book', { book, layout: layout ? 'layout' : '' });
-      },
-      'application/json': () => {
-        res.json(book);
-      },
-      default: () => {
-        res.json(book);
-      },
-    });
-  },
-});
+      if (!book) {
+        next();
+      }
+
+      res.format({
+        'text/html': () => {
+          res.render('book', {
+            book,
+            layout: res.locals.layout,
+          });
+        },
+        'application/json': () => {
+          res.json(book);
+        },
+        default: () => {
+          res.json(book);
+        },
+      });
+    },
+  });
