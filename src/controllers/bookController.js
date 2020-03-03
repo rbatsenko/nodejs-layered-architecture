@@ -44,7 +44,7 @@ module.exports = ({ bookService, bookRepository }) =>
       });
 
       // HTTP
-      res.redirect(`/book/${isbn}`);
+      res.redirect(bookLink(isbn));
     },
     async details(req, res, next) {
       const { isbn } = req.params;
