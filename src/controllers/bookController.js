@@ -1,34 +1,48 @@
-module.exports = ({ bookService, bookRepository }) => ({
-  async createOrUpdate(req, res, next) {
-    try {
-      // HTTP
-      const {
-        title, authors, isbn, description,
-      } = req.body;
+const wrapWithTryCatch = (fn) => async (req, res, next) => {
+  try {
+    await fn(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
 
-      // JS
-      await bookService.createOrUpdate({
-        title,
-        authors,
-        isbn,
-        description,
-      });
+const withErrorHandling = (wrapper, controllerObj) => Object.entries(controllerObj)
+  .reduce((accCur, [key, fn]) => ({ ...accCur, [key]: wrapper(fn) }), {});
 
-      // HTTP
-      res.redirect(`/book/${isbn}`);
-    } catch (e) {
-      next(e);
-    }
+module.exports = ({ bookService, bookRepository }) => withErrorHandling(wrapWithTryCatch, {
+  async createOrUpdate(req, res) {
+    // HTTP
+    const {
+      title, authors, isbn, description,
+    } = req.body;
+
+    // JS
+    await bookService.createOrUpdate({
+      title,
+      authors,
+      isbn,
+      description,
+    });
+
+    // HTTP
+    res.redirect(`/book/${isbn}`);
   },
-  async details(req, res, next) {
-    try {
-      const { isbn } = req.params;
+  async details(req, res) {
+    const { isbn } = req.params;
 
-      const book = await bookRepository.findOne(isbn);
+    const book = await bookRepository.findOne(isbn);
 
-      res.json(book);
-    } catch (e) {
-      next(e);
-    }
+    res.format({
+      'text/html': () => {
+        // reprezentacja HTML
+        res.send('HTML');
+      },
+      'application/json': () => {
+        res.json(book);
+      },
+      default: () => {
+        res.json(book);
+      },
+    });
   },
 });

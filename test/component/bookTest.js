@@ -18,6 +18,7 @@ describe('Book catalog', () => {
 
     await request
       .get(createResult.header.location)
+      .set('Accept', 'application/json')
       .expect(200, {
         title: 'JavaScript in Action',
         slug: 'javascript-in-action',
