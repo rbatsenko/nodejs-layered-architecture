@@ -22,7 +22,7 @@
     "@hapi/joi": "17.1.0",
     "crossenv": "0.0.2-security",
     "dotenv": "8.2.0",
-    "express": "4.17.1",
+    "express": "4.18.2",
     "hbs": "4.1.0",
     "mongodb": "3.3.4",
     "why-is-node-running": "^2.1.0"
